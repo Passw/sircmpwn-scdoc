@@ -200,8 +200,18 @@ static bool parse_linebreak(struct parser *p) {
 
 static void parse_text(struct parser *p) {
 	uint32_t ch, next, last = ' ';
+	bool chomp_next_indent = false;
 	int i = 0;
 	while ((ch = parser_getch(p)) != UTF8_INVALID) {
+		// skip indentation if last was a linebreak
+		// and we need to chomp indentation
+		if (chomp_next_indent) {
+			if (ch == '\t' || ch == ' ') {
+				continue;
+			}
+			chomp_next_indent = false;
+		}
+
 		switch (ch) {
 		case '\\':
 			ch = parser_getch(p);
@@ -235,6 +245,7 @@ static void parse_text(struct parser *p) {
 		case '+':
 			if (parse_linebreak(p)) {
 				last = '\n';
+				chomp_next_indent = true;
 			}
 			break;
 		case '\n':

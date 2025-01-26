@@ -1,0 +1,20 @@
+#!/bin/sh
+. test/lib.sh
+
+begin "Handles lists"
+scdoc <<EOF | grep -A1 '.IP \\(bu 4' | grep '^Item' >/dev/null
+test(8)
+
+- Item 1
+- Item 2
+EOF
+end 0
+
+begin "Handles line break in list"
+scdoc <<EOF | grep -A1 '^\.br$' | grep '^Where' >/dev/null
+test(8)
+
+- Item 1++
+  Where am I rendered?
+EOF
+end 0

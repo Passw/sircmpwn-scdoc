@@ -10,6 +10,16 @@ world
 EOF
 end 0
 
+begin "Handles line break with indentation"
+scdoc <<EOF | grep -A1 '^\.br$' | grep '^world' >/dev/null
+test(8)
+
+test
+	hello++
+	world
+EOF
+end 0
+
 begin "Disallows empty line after line break"
 scdoc <<EOF >/dev/null
 test(8)

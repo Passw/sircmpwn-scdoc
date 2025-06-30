@@ -18,7 +18,7 @@ struct {
 
 int utf8_size(const char *s) {
 	uint8_t c = (uint8_t)*s;
-	for (size_t i = 0; i < sizeof(sizes) / 2; ++i) {
+	for (size_t i = 0; i < sizeof(sizes) / sizeof(sizes[0]); ++i) {
 		if ((c & sizes[i].mask) == sizes[i].result) {
 			return sizes[i].octets;
 		}

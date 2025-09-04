@@ -101,6 +101,10 @@ static void parse_preamble(struct parser *p) {
 		date_time = time(NULL);
 	}
 	struct tm *date_tm = gmtime(&date_time);
+	if (date_tm == NULL) {
+		fprintf(stderr, "gmtime: failed");
+		exit(EXIT_FAILURE);
+	}
 	strftime(date, sizeof(date), "%F", date_tm);
 	while ((ch = parser_getch(p)) != UTF8_INVALID) {
 		if ((ch < 0x80 && isalnum((unsigned char)ch))

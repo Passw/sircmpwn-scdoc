@@ -746,6 +746,11 @@ static void parse_document(struct parser *p) {
 			break;
 		}
 	} while (ch != UTF8_INVALID);
+	// Close out any residual indent at EOF
+	while (indent > 0) {
+		roff_macro(p, "RE", NULL);
+		indent--;
+	}
 }
 
 static void output_scdoc_preamble(struct parser *p) {

@@ -56,6 +56,6 @@ uninstall:
 	rm -f $(DESTDIR)$(PCDIR)/scdoc.pc
 
 check: scdoc scdoc.1 scdoc.5
-	@find test -perm -111 -exec '{}' \;
+	@find test -perm -100 -exec '{}' \;
 
 .PHONY: all clean install uninstall check

@@ -1,4 +1,4 @@
-VERSION=1.11.3
+VERSION=1.11.4
 CFLAGS?=-g
 MAINFLAGS:=-DVERSION='"$(VERSION)"' -Wall -Wextra -Werror -Wno-unused-parameter
 INCLUDE+=-Iinclude

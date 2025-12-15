@@ -49,6 +49,22 @@ hello _world_
 EOF
 end 0
 
+begin "Emits bold text followed by underlined text"
+scdoc <<EOF | grep '^\\fBhello\\fR\\fIworld\\fR' >/dev/null
+test(8)
+
+*hello*_world_
+EOF
+end 0
+
+begin "Emits underlined text followed by bold text"
+scdoc <<EOF | grep '^\\fIhello\\fR\\fBworld\\fR' >/dev/null
+test(8)
+
+_hello_*world*
+EOF
+end 0
+
 begin "Handles escaped characters"
 scdoc <<EOF | grep '^hello _world_' >/dev/null
 test(8)

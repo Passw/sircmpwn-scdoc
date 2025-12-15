@@ -225,6 +225,7 @@ static void parse_text(struct parser *p) {
 			break;
 		case '*':
 			parse_format(p, FORMAT_BOLD);
+			last = '*';
 			break;
 		case '_':
 			next = parser_getch(p);

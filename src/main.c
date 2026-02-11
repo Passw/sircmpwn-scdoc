@@ -57,6 +57,11 @@ static struct str *parse_extra(struct parser *p) {
 		} else if (ch == '\n') {
 			parser_fatal(p, "Unclosed extra preamble field");
 			break;
+		} else if (ch == '-') {
+			ret = str_append_ch(extra, '\\');
+			assert(ret != -1);
+			ret = str_append_ch(extra, '-');
+			assert(ret != -1);
 		} else {
 			ret = str_append_ch(extra, ch);
 			assert(ret != -1);
@@ -109,6 +114,10 @@ static void parse_preamble(struct parser *p) {
 	while ((ch = parser_getch(p)) != UTF8_INVALID) {
 		if ((ch < 0x80 && isalnum((unsigned char)ch))
 				|| ch == '_' || ch == '-' || ch == '.') {
+			if (ch == '-') {
+				int ret = str_append_ch(name, '\\');
+				assert(ret != -1);
+			}
 			int ret = str_append_ch(name, ch);
 			assert(ret != -1);
 		} else if (ch == '(') {
@@ -127,7 +136,15 @@ static void parse_preamble(struct parser *p) {
 			}
 			char *ex2 = extras[0] != NULL ? extras[0]->str : NULL;
 			char *ex3 = extras[1] != NULL ? extras[1]->str : NULL;
-			fprintf(p->output, ".TH \"%s\" \"%s\" \"%s\"", name->str, section->str, date);
+			fprintf(p->output, ".TH \"%s\" \"%s\" \"", name->str, section->str);
+			for (char *c = date; *c; ++c) {
+				if (*c == '-') {
+					fprintf(p->output, "\\-");
+				} else {
+					fputc(*c, p->output);
+				}
+			}
+			fprintf(p->output, "\"");
 			/* ex2 and ex3 are already double-quoted */
 			if (ex2) {
 				fprintf(p->output, " %s", ex2);
@@ -279,6 +296,10 @@ static void parse_text(struct parser *p) {
 			// Escape ^ to not render it with U+02C6
 			fprintf(p->output, "\\(ha");
 			break;
+		case '-':
+			// Escape - to not render it with U+2010
+			fprintf(p->output, "\\-");
+			break;
 		default:
 			last = ch;
 			utf8_fputch(p->output, ch);
@@ -312,7 +333,11 @@ static void parse_heading(struct parser *p) {
 		break;
 	}
 	while ((ch = parser_getch(p)) != UTF8_INVALID) {
-		utf8_fputch(p->output, ch);
+		if (ch == '-') {
+			fprintf(p->output, "\\-");
+		} else {
+			utf8_fputch(p->output, ch);
+		}
 		if (ch == '\n') {
 			break;
 		}
@@ -434,6 +459,9 @@ static void parse_literal(struct parser *p, int *indent) {
 			switch (ch) {
 			case '.':
 				fprintf(p->output, "\\&.");
+				break;
+			case '-':
+				fprintf(p->output, "\\-");
 				break;
 			case '\'':
 				fprintf(p->output, "\\&'");

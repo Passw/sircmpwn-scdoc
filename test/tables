@@ -25,3 +25,12 @@ bug-example(1)
 :-
 EOF
 end 1
+
+begin "Escapes hyphens in table cells"
+scdoc <<EOF | grep '^\\-\\-tab \\-t \\-3 long\\-term$' >/dev/null
+test(8)
+
+|[ --tab -t -3 long-term
+
+EOF
+end 0

@@ -16,3 +16,11 @@ test(8)
 _hello^_
 EOF
 end 0
+
+begin "Substitute - with \\-"
+scdoc <<EOF | grep 'hello \\-\\-world \\-1 long\\-term' >/dev/null
+test(8)
+
+hello --world -1 long-term
+EOF
+end 0

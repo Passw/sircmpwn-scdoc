@@ -32,3 +32,11 @@ test(8)
 ## HEADER
 EOF
 end 0
+
+begin "Escapes hyphens in headings"
+scdoc <<EOF | grep '^\.SH HEADING \\-\\-head \\-h 2026\\-02\\-11' >/dev/null
+test(8)
+
+# HEADING --head -h 2026-02-11
+EOF
+end 0

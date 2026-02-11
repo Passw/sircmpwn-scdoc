@@ -75,3 +75,13 @@ test(8)
 		\`\`\`
 EOF
 end 1
+
+begin "Escapes hyphens in literal blocks"
+scdoc <<EOF | grep '^Literal: \\-\\-lit \\-l \\-2 long\\-term' >/dev/null
+test(8)
+
+\`\`\`
+Literal: --lit -l -2 long-term
+\`\`\`
+EOF
+end 0

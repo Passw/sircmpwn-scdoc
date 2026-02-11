@@ -72,3 +72,11 @@ test(8)
 hello \_world\_
 EOF
 end 0
+
+begin "Escapes hyphens in body text"
+scdoc <<EOF | grep '^Body: \\-\\-body \\-b \\-1 long\\-term' >/dev/null
+test(8)
+
+Body: --body -b -1 long-term
+EOF
+end 0

@@ -63,33 +63,34 @@ end 0
 
 # Make sure SOURCE_DATE_EPOCH is not set for the next tests
 unset SOURCE_DATE_EPOCH
+date_escaped="$(date -u +'%F' | sed 's/-/\\\\-/g')"
 
 begin "Writes the appropriate header"
-scdoc <<EOF | grep '^\.TH "test" "8" "'"$(date -u +'%F')"'"' >/dev/null
+scdoc <<EOF | grep '^\.TH "test" "8" "'"${date_escaped}"'"' >/dev/null
 test(8)
 EOF
 end 0
 
-begin "Preserves dashes"
-scdoc <<EOF | grep '^\.TH "test-manual" "8" "'"$(date -u +'%F')"'"' >/dev/null
+begin "Preserves dashes and add escaping"
+scdoc <<EOF | grep '^\.TH "test\\-manual" "8" "'"${date_escaped}"'"' >/dev/null
 test-manual(8)
 EOF
 end 0
 
 begin "Handles extra footer field"
-scdoc <<EOF | grep '^\.TH "test-manual" "8" "'"$(date -u +'%F')"'" "Footer"' >/dev/null
+scdoc <<EOF | grep '^\.TH "test\\-manual" "8" "'"${date_escaped}"'" "Footer"' >/dev/null
 test-manual(8) "Footer"
 EOF
 end 0
 
 begin "Handles both extra fields"
-scdoc <<EOF | grep '^\.TH "test-manual" "8" "'"$(date -u +'%F')"'" "Footer" "Header"' >/dev/null
+scdoc <<EOF | grep '^\.TH "test\\-manual" "8" "'"${date_escaped}"'" "Footer" "Header"' >/dev/null
 test-manual(8) "Footer" "Header"
 EOF
 end 0
 
 begin "Emits empty footer correctly"
-scdoc <<EOF | grep '^\.TH "test-manual" "8" "'"$(date -u +'%F')"'" "" "Header"' >/dev/null
+scdoc <<EOF | grep '^\.TH "test\\-manual" "8" "'"${date_escaped}"'" "" "Header"' >/dev/null
 test-manual(8) "" "Header"
 EOF
 end 0
@@ -97,7 +98,7 @@ end 0
 export SOURCE_DATE_EPOCH=1512861537
 
 begin "Supports \$SOURCE_DATE_EPOCH"
-scdoc <<EOF | grep '^\.TH "reproducible-manual" "8" "2017-12-09"' >/dev/null
+scdoc <<EOF | grep '^\.TH "reproducible\\-manual" "8" "2017\\-12\\-09"' >/dev/null
 reproducible-manual(8)
 EOF
 end 0
